@@ -42,8 +42,8 @@ if clientID!=-1:
     vrep.simxGetIntegerParameter(clientID,vrep.sim_intparam_mouse_x,vrep.simx_opmode_streaming) # Initialize streaming
     while time.time()-startTime < 5:
         returnCode,data=vrep.simxGetIntegerParameter(clientID,vrep.sim_intparam_mouse_x,vrep.simx_opmode_buffer) # Try to retrieve the streamed data
-        if returnCode==vrep.simx_return_ok: # After initialization of streaming, it will take a few ms before the first value arrives, so check the return code
-            print ('Mouse position x: ',data) # Mouse position x is actualized when the cursor is over V-REP's window
+        #if returnCode==vrep.simx_return_ok: # After initialization of streaming, it will take a few ms before the first value arrives, so check the return code
+            #print ('Mouse position x: ',data) # Mouse position x is actualized when the cursor is over V-REP's window
         time.sleep(0.005)
 
     # Now send some data to V-REP in a non-blocking fashion:
