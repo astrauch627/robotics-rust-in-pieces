@@ -1,2 +1,5 @@
 # Ignore all .pyc files
 *.pyc
+
+# Ignore pycache folder
+/"Python V-REP"/__pycache__
