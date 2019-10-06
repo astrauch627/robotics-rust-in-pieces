@@ -6,40 +6,18 @@ Created on Tue Sep 03 11:48:38 2019
 """
 
 import math
-import sys
 import time
+import utilities
 import vrep
 
 # IMPORTANT: Must start the simulation before running this!
 
-# clean up command, closes all opened connections
-vrep.simxFinish(-1)
+# Connect to V-REP, get client ID
+clientID = utilities.Establish_Connection()
 
-# connect to V-REP
-clientID = vrep.simxStart('127.0.0.1', 19999, True, True, 5000, 5)
-
-if clientID != -1:
-    print ('Connected to remote API server')
-else:
-    print ('Connection not successful')
-    sys.exit('Error: Could not connect')
-# end if
-
-# Get handles for robot joints, check for errors
-returnCode_SawyerJoints = [-1] * 7
-SawyerJoints = [0] * 7
-for i in range(7):
-    returnCode_SawyerJoints[i], SawyerJoints[i] = vrep.simxGetObjectHandle(clientID, 'Sawyer_joint'+str(i+1), vrep.simx_opmode_blocking)
-    if returnCode_SawyerJoints[i] != 0:
-        print('Error: object handle for Sawyer_joint'+str(i+1)+' did not return successfully')
-    # end if
-# end for
-    
-# Get handle for robot gripper, check for errors
-returnCode_BaxterGripper, BaxterGripper = vrep.simxGetObjectHandle(clientID, 'BaxterGripper', vrep.simx_opmode_blocking)
-if returnCode_BaxterGripper != 0:
-    print('Error: object handle for BaxterGripper did not return successfully')
-# end if
+# Get handles for all parts within the V-REP scene
+SawyerJoints = utilities.Get_Joint_Handles(clientID)
+BaxterGripper = utilities.Get_Gripper_Handle(clientID)
     
 # Get handle for cylinder, check for errors
 returnCode_Cylinder, Cylinder = vrep.simxGetObjectHandle(clientID, 'Cylinder', vrep.simx_opmode_blocking)
