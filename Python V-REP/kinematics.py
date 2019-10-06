@@ -41,12 +41,12 @@ def Calculate_eS(w, q, theta):
     ew = Calculate_ew(w, theta)
     
     # Calculate v
-    v = numpy.cross(-1*w, q)
+    v = numpy.cross(numpy.dot(-1, w), q)
     
     # Calculate the upper right corner of the e^([S]*theta)
-    upper_right = theta*[[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-    upper_right = numpy.add(upper_right, (1-numpy.cos(theta))*skew(w))
-    upper_right = numpy.add(upper_right, (theta - numpy.sin(theta))*numpy.dot(skew(w), skew(w)))
+    upper_right = numpy.dot(theta, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    upper_right = numpy.add(upper_right, numpy.dot(1-numpy.cos(theta), skew(w)))
+    upper_right = numpy.add(upper_right, numpy.dot(theta - numpy.sin(theta), numpy.dot(skew(w), skew(w))))
     upper_right = numpy.dot(upper_right, v)
     
     eS = [[ew[0][0], ew[0][1], ew[0][2], upper_right[0]], [ew[1][0], ew[1][1], ew[1][2], upper_right[1]], [ew[2][0], ew[2][1], ew[2][2], upper_right[2]], [0, 0, 0, 1]]
@@ -64,8 +64,8 @@ def Calculate_ew(w, theta):
     # Caclulate e^([w]*theta)
     # e^([w]*theta) = I + sin(theta)*[w] + (1-cos(theta))*[w]^2
     ew = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-    ew = numpy.add(ew, numpy.sin(theta)*skew(w))
-    ew = numpy.add(ew, (1-numpy.cos(theta))*numpy.dot(skew(w), skew(w)))
+    ew = numpy.add(ew, numpy.dot(numpy.sin(theta), skew(w)))
+    ew = numpy.add(ew, numpy.dot((1-numpy.cos(theta)), numpy.dot(skew(w), skew(w))))
     
     return ew
     
@@ -78,7 +78,7 @@ def skew(a):
     
     # Print an error if the input array is not 3x1.
     size = numpy.shape(a)
-    if (size[0] != 3 or size[1] != 1):
+    if (size[0] != 3):
         print("Error: wrong dimensions as input for kinematics.skew()")
     # end if
     
