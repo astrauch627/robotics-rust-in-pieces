@@ -65,3 +65,32 @@ def Get_Gripper_Handle(clientID):
     return BaxterGripper
     
 # end def
+    
+def Get_Conveyor_Handles(clientID):
+    """
+    This function returns a list of the handles associated with each component
+    in the conveyor belt
+    """
+    
+    # Get handles for conveyor belt, check for errors
+    returnCode_ConveyorBelt = [-1] * 3
+    ConveyorBelt = [0] * 3
+    # Forwarder
+    returnCode_ConveyorBelt[0], ConveyorBelt[0] = vrep.simxGetObjectHandle(clientID, 'customizableConveyor_forwarder', vrep.simx_opmode_blocking)
+    if returnCode_ConveyorBelt[0] != 0:
+        print('Error: object handle for conveyor_forwarder did not return successfully.')
+    # end if
+    # Texture Shape
+    returnCode_ConveyorBelt[1], ConveyorBelt[1] = vrep.simxGetObjectHandle(clientID, 'customizableConveyor_tableTop', vrep.simx_opmode_blocking)
+    if returnCode_ConveyorBelt[1] != 0:
+        print('Error: object handle for conveyor_tableTop did not return successfully.')
+    # end if
+    # Proximity Sensor
+    returnCode_ConveyorBelt[2], ConveyorBelt[2] = vrep.simxGetObjectHandle(clientID, 'Proximity_sensor', vrep.simx_opmode_blocking)
+    if returnCode_ConveyorBelt[2] != 0:
+        print('Error: object handle for conveyor_proximitySensor')
+    # end if
+    
+    return ConveyorBelt
+    
+# end def
