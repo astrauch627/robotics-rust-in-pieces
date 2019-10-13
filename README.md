@@ -1,15 +1,6 @@
 # robotics-rust-in-pieces
 ECE470/AE482 Robotics Class Project
 <br/>
-<br/>TODO:
-<br/>Test code for computing T
-<br/>Use code to compute T to move robot
-<br/>Code in the movement of the arm to a target (Akshay)
-<br/>Modify robot to include screwdriver (Oscar)
-<br/>Get conveyor belts moving (Charlie)
-<br/>Develop conveyor belt product, add to scene (Robert)
-<br/>Put sensors onto robot (Amy)
-<br/>
 <br/>Notes on Deliverable #3:
 <br/>Run "Python V-REP"/main.py to kick off simulation with forward kinematics.
 <br/>
