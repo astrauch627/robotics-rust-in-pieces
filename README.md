@@ -2,9 +2,10 @@
 ECE470/AE482 Robotics Class Project
 <br/>
 <br/>Notes on Deliverable #3:
-<br/>Start up V-REP simulation by running the scene, "V-REP Scenes"/FinalProjectScene_RustInPieces
+<br/>Start up V-REP simulation by running the scene, "V-REP Scenes"/BeltDemo_RustInPieces
 <br/>Run "Python V-REP"/main.py to kick off simulation.
 <br/>Forward kinematics were computed using the matlab program, "Python V-REP"/ForwardKinematics.m
+<br/>***SEE ForwardKinematics.m FOR FORWARD KINEMATICS CALCULATIONS***
 <br/>
 <br/>Notes on Deliverable #2:
 <br/>The first YouTube video was made from changing the code in the V-REP scene we created for this deliverable, "V-REP Scenes"/initial_motion.ttt
