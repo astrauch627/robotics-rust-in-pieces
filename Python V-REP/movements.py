@@ -37,7 +37,7 @@ def Move_To_Position(clientID, thetas):
         
         # Pause for one second after the movement
         # This is only for debugging purposes - remove later!!
-        time.sleep(1.0)
+        #time.sleep(1.0)
         
     # end for
     
