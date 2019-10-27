@@ -31,8 +31,8 @@ def Move_To_Position(clientID, thetas):
         returnCode_vel = vrep.simxSetJointTargetVelocity(clientID, joint, constants.targetVel[i], vrep.simx_opmode_oneshot)
         
         # Check for errors
-        if returnCode_pos != 1 or returnCode_vel != 1:
-            print('Error: movement not registered correctly.')
+        #if returnCode_pos != 1 or returnCode_vel != 1:
+            #print('Error: movement not registered correctly.')
         # end if
         
         # Pause for one second after the movement
