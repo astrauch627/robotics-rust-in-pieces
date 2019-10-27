@@ -21,13 +21,13 @@ targetVel = [0.05] * 7
 # Define constants for forward kinematics
 # Define the origin of the base frame as the location of Sawyer_link0_visible
 q0 = numpy.array([0.8248, -0.6500, 0.0470])
-q1 = numpy.array([0.8655, -0.6540, 0.2425])-q0
-q2 = numpy.array([0.9406, -0.4902, 0.3157])-q0
-q3 = numpy.array([1.2043, -0.4583, 0.3080])-q0
-q4 = numpy.array([1.3399, -0.5926, 0.3025])-q0
-q5 = numpy.array([1.5916, -0.6257, 0.2918])-q0
-q6 = numpy.array([1.7188, -0.5189, 0.2817])-q0
-q7 = numpy.array([1.8191, -0.4895, 0.2910])-q0
+q1 = numpy.array([0.8656, -0.6541, 0.2425])-q0
+q2 = numpy.array([0.9060, -0.5891, 0.3170])-q0
+q3 = numpy.array([1.0304, -0.4575, 0.3128])-q0
+q4 = numpy.array([1.3059, -0.5049, 0.3045])-q0
+q5 = numpy.array([1.4189, -0.6259, 0.2994])-q0
+q6 = numpy.array([1.7054, -0.5853, 0.2846])-q0
+q7 = numpy.array([1.7793, -0.4895, 0.2805])-q0
 q = numpy.array([q1, q2, q3, q4, q5, q6, q7])
 w1 = numpy.array([0, 0, 1])
 w2 = numpy.array([0, 1, 0])

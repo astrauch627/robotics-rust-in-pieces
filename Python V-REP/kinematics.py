@@ -23,7 +23,10 @@ def Predict_FK_Position(clientID, thetas):
     s5 = Find_Screw_Axis(clientID, 5)
     s6 = Find_Screw_Axis(clientID, 6)
     s7 = Find_Screw_Axis(clientID, 7)
-    p = numpy.array([1.8191, -0.4895, 0.2910]) - constants.q0
+    # Define BaxterGripper as the end-effector
+    # Obtained values for p by moving the gripper to its end position of [0, 0, 0, 0, 0, 0, 0]
+    # and getting x, y, z coordinates of BaxterGripper
+    p = numpy.array([1.8799, -0.4895, 0.2823]) - constants.q0
     M = numpy.array([[0, 0, 1, p[0]], [0, 1, 0, p[1]], [-1, 0, 0, p[2]], [0, 0, 0, 1]])
     
     # Incrementally multiply each exponential matrix to each other
