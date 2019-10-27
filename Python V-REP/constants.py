@@ -18,7 +18,8 @@ maxAccel = [accel*math.pi/180,accel*math.pi/180,accel*math.pi/180,accel*math.pi/
 maxJerk = [jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180]
 targetVel = [0.05] * 7
 
-# Define forward kinematics constants
+# Define constants for forward kinematics
+# Define the origin of the base frame as the location of Sawyer_link0_visible
 q0 = numpy.array([0.8248, -0.6500, 0.0470])
 q1 = numpy.array([0.8655, -0.6540, 0.2425])-q0
 q2 = numpy.array([0.9406, -0.4902, 0.3157])-q0

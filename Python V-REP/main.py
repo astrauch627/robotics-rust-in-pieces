@@ -40,9 +40,6 @@ thetas = [math.radians(-150), math.radians(-90), math.radians(0), math.radians(5
 movements.Move_To_Position(clientID, thetas)
 predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
 print("Predicted location of the end-effector: " + str(predicted_loc))
-returnCode, actual_loc = vrep.simxGetObjectPosition(clientID, end_effector_handle, base_handle, vrep.simx_opmode_streaming)
-print("Actual location of the end-effector: " + str(actual_loc))
-
 
 # Wait until block has moved in front of proximity sensor
 while isObjectDetected == False:
@@ -57,7 +54,7 @@ while isObjectDetected == False:
 # TODO: tune these angle values
 thetas = [math.radians(-160), math.radians(-90), math.radians(28), math.radians(58), math.radians(0), math.radians(112.4), math.radians(0)]
 movements.Move_To_Position(clientID, thetas)
-predicted_loc = kinematics.Predict_FK_Position(thetas)
+predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
 print("Predicted location of the end-effector: " + str(predicted_loc))
 
 time.sleep(5)
@@ -66,7 +63,7 @@ time.sleep(5)
 thetas = [math.radians(-160), math.radians(-90), math.radians(28), math.radians(65.45), math.radians(0), math.radians(112.4), math.radians(1000)]
 # TODO: tune these angle values
 movements.Move_To_Position(clientID, thetas)
-predicted_loc = kinematics.Predict_FK_Position(thetas)
+predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
 print("Predicted location of the end-effector: " + str(predicted_loc))
 
 time.sleep(100)

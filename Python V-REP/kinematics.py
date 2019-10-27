@@ -8,8 +8,6 @@ Created on Sat Oct  5 17:26:26 2019
 import constants
 import numpy
 import scipy.linalg
-import utilities
-import vrep
     
 def Predict_FK_Position(clientID, thetas):
     """
