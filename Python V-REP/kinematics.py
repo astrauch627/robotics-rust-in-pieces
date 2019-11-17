@@ -6,8 +6,11 @@ Created on Sat Oct  5 17:26:26 2019
 """
 
 import constants
-import numpy
-import scipy.linalg
+import math
+import movements
+import numpy as np
+import vrep
+from scipy.linalg import expm
     
 def Predict_FK_Position(clientID, thetas):
     """
@@ -23,24 +26,25 @@ def Predict_FK_Position(clientID, thetas):
     s5 = Find_Screw_Axis(clientID, 5)
     s6 = Find_Screw_Axis(clientID, 6)
     s7 = Find_Screw_Axis(clientID, 7)
+    
     # Define BaxterGripper as the end-effector
     # Obtained values for p by moving the gripper to its end position of [0, 0, 0, 0, 0, 0, 0]
     # and getting x, y, z coordinates of BaxterGripper
-    p = numpy.array([1.8799, -0.4895, 0.2823]) - constants.q0
-    M = numpy.array([[0, 0, 1, p[0]], [0, 1, 0, p[1]], [-1, 0, 0, p[2]], [0, 0, 0, 1]])
+    p = constants.p_end
+    M = np.array([[0.0, 0.0, 1.0, p[0]], [0.0, 1.0, 0.0, p[1]], [-1.0, 0.0, 0.0, p[2]], [0.0, 0.0, 0.0, 1.0]])
     
     # Incrementally multiply each exponential matrix to each other
-    T = scipy.linalg.expm(s1*thetas[0])
-    T = numpy.dot(T, scipy.linalg.expm(s2*thetas[1]))
-    T = numpy.dot(T, scipy.linalg.expm(s3*thetas[2]))
-    T = numpy.dot(T, scipy.linalg.expm(s4*thetas[3]))
-    T = numpy.dot(T, scipy.linalg.expm(s5*thetas[4]))
-    T = numpy.dot(T, scipy.linalg.expm(s6*thetas[5]))
-    T = numpy.dot(T, scipy.linalg.expm(s7*thetas[6]))
-    T = numpy.dot(T, M)
+    T = expm(s1*thetas[0])
+    T = np.dot(T, expm(s2*thetas[1]))
+    T = np.dot(T, expm(s3*thetas[2]))
+    T = np.dot(T, expm(s4*thetas[3]))
+    T = np.dot(T, expm(s5*thetas[4]))
+    T = np.dot(T, expm(s6*thetas[5]))
+    T = np.dot(T, expm(s7*thetas[6]))
+    T = np.dot(T, M)
     
-    # Parse T to get position
-    pos = numpy.array([T[0][3], T[1][3], T[2][3]]) + constants.q0
+    # Parse T to get position of end-effector, relative to the base frame
+    pos = np.array([T[0][3], T[1][3], T[2][3]])
     return pos
     
 # end def
@@ -53,14 +57,29 @@ def Find_Screw_Axis(clientID, jointNumber):
     
     # Get w and q specific to the input joint number
     w = constants.w[jointNumber-1]
-    q = constants.q[jointNumber-1]
+    # q is calculated as the distance vector between the previous joint and the current joint
+    q = np.transpose(constants.q[jointNumber-1])
+    
     
     # Calculate screw axis
-    v = numpy.cross(-1*w, q)
-    w_mat = numpy.array([[0, -1*w[2], w[1]], [w[2], 0, -1*w[0]], [-1*w[1], w[0], 0]])
-    S = numpy.array([[w_mat[0][0], w_mat[0][1], w_mat[0][2], v[0]], [w_mat[1][0], w_mat[1][1], w_mat[1][2], v[1]], [w_mat[2][0], w_mat[2][1], w_mat[2][2], v[2]], [0, 0, 0, 0]])
+    v = np.transpose(np.dot(skew(-w), q))
+    
+    
+    w_mat = skew(w)
+    S = np.array([[w_mat[0][0], w_mat[0][1], w_mat[0][2], v[0]], [w_mat[1][0], w_mat[1][1], w_mat[1][2], v[1]], [w_mat[2][0], w_mat[2][1], w_mat[2][2], v[2]], [0, 0, 0, 0]])
     
     return S
     
+    
+# end def
+    
+def skew(A):
+    """
+    This function finds the skew matrix for the given matrix
+    """
+    
+    A_mat = np.array([[0.0, -A[2], A[1]], [A[2], 0.0, -A[0]], [-A[1], A[0], 0.0]])
+    
+    return A_mat
     
 # end def

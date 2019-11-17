@@ -21,25 +21,25 @@ This file calls all other functions required to move the simulation.
 # Connect to V-REP, get client ID
 clientID = utilities.Establish_Connection()
 
-# Get proximity sensor handle
+# Get some handles
 ConveyorHandles = utilities.Get_Conveyor_Handles(clientID)
 ProximitySensor_Handle = ConveyorHandles[2]
+end_effector_handle = utilities.Get_Gripper_Handle(clientID)
+base_handle = utilities.Get_Base_Handle(clientID)
 
-# Check for proximity sensor status
+# Initialize proximity sensor status
 returnCode, detectionState, detectedPoint, detectedObjectHandle, detectedSurfaceNormalVector = vrep.simxReadProximitySensor(clientID, ProximitySensor_Handle, vrep.simx_opmode_streaming)
 isObjectDetected = detectionState
-
-# Get end-effector handle
-joint_handles = utilities.Get_Joint_Handles(clientID)
-end_effector_handle = joint_handles[6]
-returnCode, base_handle = vrep.simxGetObjectHandle(clientID, 'Sawyer_link0_visible', vrep.simx_opmode_blocking)
 
 # Move robot to hover over object
 # TODO: tune these angle values
 thetas = [math.radians(-150), math.radians(-90), math.radians(0), math.radians(50), math.radians(0), math.radians(110), math.radians(0)]
 movements.Move_To_Position(clientID, thetas)
 predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
-print("Predicted location of the end-effector: " + str(predicted_loc))
+print("FK prediction: " + str(predicted_loc))
+actual_loc = movements.Get_End_Relative_Position(clientID)
+print("Actual location: " + str(actual_loc))
+
 
 # Wait until block has moved in front of proximity sensor
 while isObjectDetected == False:
@@ -55,7 +55,9 @@ while isObjectDetected == False:
 thetas = [math.radians(-160), math.radians(-90), math.radians(28), math.radians(58), math.radians(0), math.radians(112.4), math.radians(0)]
 movements.Move_To_Position(clientID, thetas)
 predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
-print("Predicted location of the end-effector: " + str(predicted_loc))
+print("FK prediction: " + str(predicted_loc))
+actual_loc = movements.Get_End_Relative_Position(clientID)
+print("Actual location: " + str(actual_loc))
 
 time.sleep(5)
 
@@ -64,7 +66,10 @@ thetas = [math.radians(-160), math.radians(-90), math.radians(28), math.radians(
 # TODO: tune these angle values
 movements.Move_To_Position(clientID, thetas)
 predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
-print("Predicted location of the end-effector: " + str(predicted_loc))
+print("FK prediction: " + str(predicted_loc))
+actual_loc = movements.Get_End_Relative_Position(clientID)
+print("Actual location: " + str(actual_loc))
+
 
 time.sleep(100)
 

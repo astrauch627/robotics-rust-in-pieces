@@ -5,6 +5,9 @@ Created on Sat Oct  5 17:15:07 2019
 @author: astra
 """
 
+import math
+import movements
+import numpy as np
 import sys
 import vrep
 
@@ -92,5 +95,74 @@ def Get_Conveyor_Handles(clientID):
     # end if
     
     return ConveyorBelt
+    
+# end def
+    
+def Get_Base_Handle(clientID):
+    """
+    This function returns the handle associated with the robot's base. The base
+    is defined as link 0 on the Sawyer robot.
+    """
+    
+    # Get handle and return code
+    returnCode, base_handle = vrep.simxGetObjectHandle(clientID, 'Sawyer_link0_visible', vrep.simx_opmode_blocking)
+    # Use return code to check for errors
+    if returnCode != 0:
+        print('Error: object handle for Sawyer_link0_visible did not return successfully.')
+    # end if
+    
+    return base_handle
+
+# end def
+    
+def Print_q():
+    """
+    This function prints out all of the robot's joint dimensions. Copy-and-paste
+    this output into constants.py
+    """
+    
+    clientID = Establish_Connection()
+    
+    # Move the robot into the "zero" position
+    thetas = [0, 0, 0, 0, 0, 0, 0]
+    movements.Move_To_Position(clientID, thetas)
+    
+    print('Copy the following lines into constants.py:')
+    print(' ')
+    
+    # Set the dummy object as the previous joint handle
+    returnCode, baseHandle = vrep.simxGetObjectHandle(clientID, 'Base_Frame_Origin', vrep.simx_opmode_blocking)
+    if returnCode != 0:
+        print('Error '+str(returnCode)+': object handle for Base_Frame_Origin did not return successfully')
+    # end if
+    prevJointHandle = baseHandle
+    for i in range(1,8):
+        # Get current joint handle
+        returnCode, currJointHandle = vrep.simxGetObjectHandle(clientID, 'Joint'+str(i)+'_Origin', vrep.simx_opmode_blocking)
+        if returnCode != 0:
+            print('Error '+str(returnCode)+': object handle for Joint'+str(i)+'_Origin did not return successfully')
+        # end if
+        
+        # Get joint dimensions and print
+        returnCode, currPos = vrep.simxGetObjectPosition(clientID, currJointHandle, -1, vrep.simx_opmode_blocking)
+        if returnCode != 0:
+            print('Error '+str(returnCode)+': position for Joint'+str(i)+'_Origin did not return successfully')
+        # end if
+        returnCode, prevPos = vrep.simxGetObjectPosition(clientID, prevJointHandle, -1, vrep.simx_opmode_blocking)
+        if returnCode != 0:
+            print('Error '+str(returnCode)+': position for Joint'+str(i-1)+'_Origin did not return successfully')
+        # end if
+        pos = np.subtract(currPos, prevPos)
+        print('q'+str(i)+' = np.array(['+str(pos[0])+', '+str(pos[1])+', '+str(pos[2])+'])')
+        
+        # Update previous joint handle
+        prevJointHandle = currJointHandle
+    # end for
+    
+    print('q = np.array([q1, q2, q3, q4, q5, q6, q7])')
+    
+    # Get the relative location of the end-effector
+    end_pos = movements.Get_End_Relative_Position(clientID)
+    print('p_end = np.array(['+str(end_pos[0])+', '+str(end_pos[1])+', '+str(end_pos[2])+'])')
     
 # end def
