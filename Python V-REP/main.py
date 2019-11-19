@@ -13,6 +13,7 @@ import utilities
 import vrep
 
 # IMPORTANT: Must start the simulation before running this!
+# simExtRemoteApiStart(19999)
 
 """
 This file calls all other functions required to move the simulation.
@@ -24,7 +25,6 @@ clientID = utilities.Establish_Connection()
 # Get some handles
 ConveyorHandles = utilities.Get_Conveyor_Handles(clientID)
 ProximitySensor_Handle = ConveyorHandles[2]
-end_effector_handle = utilities.Get_Gripper_Handle(clientID)
 base_handle = utilities.Get_Base_Handle(clientID)
 
 # Initialize proximity sensor status
@@ -33,14 +33,15 @@ isObjectDetected = detectionState
 
 # Move robot to hover over object
 # TODO: tune these angle values
-thetas = [math.radians(-150), math.radians(-90), math.radians(0), math.radians(50), math.radians(0), math.radians(110), math.radians(0)]
+#thetas = [math.radians(-150), math.radians(-90), math.radians(0), math.radians(50), math.radians(0), math.radians(110), math.radians(0)]
+thetas = [math.radians(-90), math.radians(-60), math.radians(0), math.radians(30), math.radians(0), math.radians(120), math.radians(0)]
 movements.Move_To_Position(clientID, thetas)
 predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
 print("FK prediction: " + str(predicted_loc))
 actual_loc = movements.Get_End_Relative_Position(clientID)
 print("Actual location: " + str(actual_loc))
 
-
+"""
 # Wait until block has moved in front of proximity sensor
 while isObjectDetected == False:
     time.sleep(1)
@@ -70,9 +71,9 @@ print("FK prediction: " + str(predicted_loc))
 actual_loc = movements.Get_End_Relative_Position(clientID)
 print("Actual location: " + str(actual_loc))
 
-
 time.sleep(100)
 
 # End simulation
 print ('All done!')
 vrep.simxStopSimulation(clientID, vrep.simx_opmode_oneshot)
+"""

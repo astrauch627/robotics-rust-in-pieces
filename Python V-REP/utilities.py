@@ -153,7 +153,10 @@ def Print_q():
             print('Error '+str(returnCode)+': position for Joint'+str(i-1)+'_Origin did not return successfully')
         # end if
         pos = np.subtract(currPos, prevPos)
-        print('q'+str(i)+' = np.array(['+str(pos[0])+', '+str(pos[1])+', '+str(pos[2])+'])')
+        if (i == 1):
+            print('q'+str(i)+' = np.array(['+str(pos[0])+', '+str(pos[1])+', '+str(pos[2])+'])')
+        else:
+            print('q'+str(i)+' = q'+str(i-1)+' + np.array(['+str(pos[0])+', '+str(pos[1])+', '+str(pos[2])+'])')
         
         # Update previous joint handle
         prevJointHandle = currJointHandle
