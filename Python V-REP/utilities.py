@@ -5,7 +5,6 @@ Created on Sat Oct  5 17:15:07 2019
 @author: astra
 """
 
-import math
 import movements
 import numpy as np
 import sys
@@ -45,27 +44,12 @@ def Get_Joint_Handles(clientID, robotID):
     SawyerJoints = [0] * 7
     for i in range(7):
         returnCode_SawyerJoints[i], SawyerJoints[i] = vrep.simxGetObjectHandle(clientID, 'Sawyer_joint'+str(i+1)+'#'+str(robotID), vrep.simx_opmode_blocking)
-        if returnCode_SawyerJoints[i] != 0:
-            print('Error: object handle for Sawyer_joint'+str(i+1)+' did not return successfully.')
+        if returnCode_SawyerJoints[i] != vrep.simx_return_ok:
+            raise Exception('Error: object handle for Sawyer_joint'+str(i+1)+' did not return successfully.')
         # end if
     # end for
     
     return SawyerJoints
-    
-# end def
-    
-def Get_Gripper_Handle(clientID):
-    """
-    This function returns the handle associated with the Baxter Gripper.
-    """
-    
-    # Get handle for robot gripper, check for errors
-    returnCode_BaxterGripper, BaxterGripper = vrep.simxGetObjectHandle(clientID, 'BaxterGripper', vrep.simx_opmode_blocking)
-    if returnCode_BaxterGripper != 0:
-        print('Error: object handle for BaxterGripper did not return successfully.')
-    # end if
-    
-    return BaxterGripper
     
 # end def
     
@@ -75,23 +59,25 @@ def Get_Conveyor_Handles(clientID):
     in the conveyor belt
     """
     
-    # Get handles for conveyor belt, check for errors
-    returnCode_ConveyorBelt = [-1] * 3
+    # Initialize list of handles
     ConveyorBelt = [0] * 3
+    
     # Forwarder
-    returnCode_ConveyorBelt[0], ConveyorBelt[0] = vrep.simxGetObjectHandle(clientID, 'customizableConveyor_forwarder', vrep.simx_opmode_blocking)
-    if returnCode_ConveyorBelt[0] != 0:
-        print('Error: object handle for conveyor_forwarder did not return successfully.')
+    returnCode, ConveyorBelt[0] = vrep.simxGetObjectHandle(clientID, 'customizableConveyor_forwarder', vrep.simx_opmode_blocking)
+    if returnCode != vrep.simx_return_ok:
+        raise Exception('Error: object handle for conveyor_forwarder did not return successfully.')
     # end if
+    
     # Texture Shape
-    returnCode_ConveyorBelt[1], ConveyorBelt[1] = vrep.simxGetObjectHandle(clientID, 'customizableConveyor_tableTop', vrep.simx_opmode_blocking)
-    if returnCode_ConveyorBelt[1] != 0:
-        print('Error: object handle for conveyor_tableTop did not return successfully.')
+    returnCode, ConveyorBelt[1] = vrep.simxGetObjectHandle(clientID, 'customizableConveyor_tableTop', vrep.simx_opmode_blocking)
+    if returnCode != vrep.simx_return_ok:
+        raise Exception('Error: object handle for conveyor_tableTop did not return successfully.')
     # end if
+    
     # Proximity Sensor
-    returnCode_ConveyorBelt[2], ConveyorBelt[2] = vrep.simxGetObjectHandle(clientID, 'Proximity_sensor', vrep.simx_opmode_blocking)
-    if returnCode_ConveyorBelt[2] != 0:
-        print('Error: object handle for conveyor_proximitySensor')
+    returnCode, ConveyorBelt[2] = vrep.simxGetObjectHandle(clientID, 'Proximity_sensor', vrep.simx_opmode_blocking)
+    if returnCode != vrep.simx_return_ok:
+        raise Exception('Error: object handle for conveyor_proximitySensor')
     # end if
     
     return ConveyorBelt
@@ -107,8 +93,8 @@ def Get_Base_Handle(clientID, robotID):
     # Get handle and return code
     returnCode, base_handle = vrep.simxGetObjectHandle(clientID, 'Sawyer_link0_visible#'+str(robotID), vrep.simx_opmode_blocking)
     # Use return code to check for errors
-    if returnCode != 0:
-        print('Error: object handle for Sawyer_link0_visible did not return successfully.')
+    if returnCode != vrep.simx_return_ok:
+        raise Exception('Error: object handle for Sawyer_link0_visible did not return successfully.')
     # end if
     
     return base_handle
@@ -132,25 +118,25 @@ def Print_q(robotID):
     
     # Set the dummy object as the previous joint handle
     returnCode, baseHandle = vrep.simxGetObjectHandle(clientID, 'Base_Frame_Origin#'+str(robotID), vrep.simx_opmode_blocking)
-    if returnCode != 0:
-        print('Error '+str(returnCode)+': object handle for Base_Frame_Origin did not return successfully')
+    if returnCode != vrep.simx_return_ok:
+        raise Exception('Error '+str(returnCode)+': object handle for Base_Frame_Origin did not return successfully')
     # end if
     prevJointHandle = baseHandle
     for i in range(1,8):
         # Get current joint handle
         returnCode, currJointHandle = vrep.simxGetObjectHandle(clientID, 'Joint'+str(i)+'_Origin#'+str(robotID), vrep.simx_opmode_blocking)
-        if returnCode != 0:
-            print('Error '+str(returnCode)+': object handle for Joint'+str(i)+'_Origin did not return successfully')
+        if returnCode != vrep.simx_return_ok:
+            raise Exception('Error '+str(returnCode)+': object handle for Joint'+str(i)+'_Origin did not return successfully')
         # end if
         
         # Get joint dimensions and print
         returnCode, currPos = vrep.simxGetObjectPosition(clientID, currJointHandle, -1, vrep.simx_opmode_blocking)
-        if returnCode != 0:
-            print('Error '+str(returnCode)+': position for Joint'+str(i)+'_Origin did not return successfully')
+        if returnCode != vrep.simx_return_ok:
+            raise Exception('Error '+str(returnCode)+': position for Joint'+str(i)+'_Origin did not return successfully')
         # end if
         returnCode, prevPos = vrep.simxGetObjectPosition(clientID, prevJointHandle, -1, vrep.simx_opmode_blocking)
-        if returnCode != 0:
-            print('Error '+str(returnCode)+': position for Joint'+str(i-1)+'_Origin did not return successfully')
+        if returnCode != vrep.simx_return_ok:
+            raise Exception('Error '+str(returnCode)+': position for Joint'+str(i-1)+'_Origin did not return successfully')
         # end if
         pos = np.subtract(currPos, prevPos)
         if (i == 1):

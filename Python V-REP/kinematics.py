@@ -60,16 +60,13 @@ def Find_Screw_Axis(clientID, jointNumber):
     # q is calculated as the distance vector between the previous joint and the current joint
     q = np.transpose(constants.q[jointNumber-1])
     
-    
     # Calculate screw axis
     v = np.transpose(np.dot(skew(-w), q))
-    
     
     w_mat = skew(w)
     S = np.array([[w_mat[0][0], w_mat[0][1], w_mat[0][2], v[0]], [w_mat[1][0], w_mat[1][1], w_mat[1][2], v[1]], [w_mat[2][0], w_mat[2][1], w_mat[2][2], v[2]], [0, 0, 0, 0]])
     
     return S
-    
     
 # end def
     
@@ -93,12 +90,12 @@ def Get_IK_Angles(clientID, worldCoords, rotAngle, robotID):
     
     # Get position of base frame origin in world frame coordinates
     returnCode, baseHandle = vrep.simxGetObjectHandle(clientID, 'Base_Frame_Origin#'+str(robotID), vrep.simx_opmode_blocking)
-    if returnCode != 0:
-        print('Error: object handle for Base_Frame_Origin did not return successfully.')
+    if returnCode != vrep.simx_return_ok:
+        raise Exception('Error: object handle for Base_Frame_Origin did not return successfully.')
     # end if
     returnCode, basePos = vrep.simxGetObjectPosition(clientID, baseHandle, -1, vrep.simx_opmode_blocking)
-    if returnCode != 0:
-        print('Error '+str(returnCode)+' : object position for Base_Frame_Orign did not return successfully.')
+    if returnCode != vrep.simx_return_ok:
+        raise Exception('Error '+str(returnCode)+' : object position for Base_Frame_Orign did not return successfully.')
     # end if
     
     # Convert from world frame to base frame

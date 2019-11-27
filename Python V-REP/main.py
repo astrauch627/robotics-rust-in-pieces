@@ -7,6 +7,7 @@ Created on Sat Oct  5 17:14:03 2019
 
 import kinematics
 import math
+import numpy as np
 import movements
 import time
 import utilities
@@ -31,8 +32,11 @@ base_handle = utilities.Get_Base_Handle(clientID, 1)
 returnCode, detectionState, detectedPoint, detectedObjectHandle, detectedSurfaceNormalVector = vrep.simxReadProximitySensor(clientID, ProximitySensor_Handle, vrep.simx_opmode_streaming)
 isObjectDetected = detectionState
 
+# Initialize object number
+objectID = 0
+
 # Move robot #1 to hover over object
-thetas = kinematics.Get_IK_Angles(clientID, [0.5403, -1.105, 0.65], 0, 1)
+thetas = kinematics.Get_IK_Angles(clientID, [0.5403, -1.100, 0.65], 0, 1)
 print(thetas)
 movements.Move_To_Position(clientID, thetas, 1)
 predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
@@ -49,31 +53,19 @@ while isObjectDetected == False:
     isObjectDetected = detectionState
 # end while
 
-# Block has been detected, move robot down to block
-# TODO: tune these angle values
-thetas = [math.radians(-160), math.radians(-90), math.radians(28), math.radians(58), math.radians(0), math.radians(112.4), math.radians(0)]
-movements.Move_To_Position(clientID, thetas)
+# Block has been detected, lower screwdriver into notch
+thetas = kinematics.Get_IK_Angles(clientID, [0.5403, -1.100, 0.611], 0, 1)
+movements.Move_To_Position(clientID, thetas, 1)
 
-"""
-predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
-print("FK prediction: " + str(predicted_loc))
-actual_loc = movements.Get_End_Relative_Position(clientID)
-print("Actual location: " + str(actual_loc))
+time.sleep(2)
+
+# Spin screwdriver clockwise
+movements.Spin_Screwdriver(clientID, [0.5403, -1.100, 0.611], 1, objectID)
+
 
 time.sleep(5)
 
-# Spin the gripper over block
-thetas = [math.radians(-160), math.radians(-90), math.radians(28), math.radians(65.45), math.radians(0), math.radians(112.4), math.radians(1000)]
-# TODO: tune these angle values
-movements.Move_To_Position(clientID, thetas)
-predicted_loc = kinematics.Predict_FK_Position(clientID, thetas)
-print("FK prediction: " + str(predicted_loc))
-actual_loc = movements.Get_End_Relative_Position(clientID)
-print("Actual location: " + str(actual_loc))
-
-time.sleep(100)
-
 # End simulation
-print ('All done!')
 vrep.simxStopSimulation(clientID, vrep.simx_opmode_oneshot)
-"""
+vrep.simxGetPingTime(clientID)
+print ('All done!')

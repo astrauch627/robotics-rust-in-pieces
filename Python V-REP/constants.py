@@ -5,19 +5,7 @@ Created on Sat Oct  5 19:17:08 2019
 @author: astra
 """
 
-import math
 import numpy as np
-
-
-# RML Vectors
-accel = 20
-jerk = 40
-currentVel = [0] * 7
-currentAccel = [0] * 7
-maxVel = [84*math.pi/180,64*math.pi/180,95*math.pi/180,95*math.pi/180,170*math.pi/180,170*math.pi/180,221*math.pi/180]
-maxAccel = [accel*math.pi/180,accel*math.pi/180,accel*math.pi/180,accel*math.pi/180,accel*math.pi/180,accel*math.pi/180,accel*math.pi/180]
-maxJerk = [jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180,jerk*math.pi/180]
-targetVel = [0.05] * 7
 
 # Get all joint dimensions in the "standing-up" position
 # Note: get these easily from copy-and-paste output from the following lines into the IPython console:
