@@ -34,7 +34,7 @@ def Establish_Connection():
     
 # end def
     
-def Get_Joint_Handles(clientID):
+def Get_Joint_Handles(clientID, robotID):
     """
     This function returns a list of the handle associated with each Sawyer
     robot joint.
@@ -44,7 +44,7 @@ def Get_Joint_Handles(clientID):
     returnCode_SawyerJoints = [-1] * 7
     SawyerJoints = [0] * 7
     for i in range(7):
-        returnCode_SawyerJoints[i], SawyerJoints[i] = vrep.simxGetObjectHandle(clientID, 'Sawyer_joint'+str(i+1), vrep.simx_opmode_blocking)
+        returnCode_SawyerJoints[i], SawyerJoints[i] = vrep.simxGetObjectHandle(clientID, 'Sawyer_joint'+str(i+1)+'#'+str(robotID), vrep.simx_opmode_blocking)
         if returnCode_SawyerJoints[i] != 0:
             print('Error: object handle for Sawyer_joint'+str(i+1)+' did not return successfully.')
         # end if
@@ -98,14 +98,14 @@ def Get_Conveyor_Handles(clientID):
     
 # end def
     
-def Get_Base_Handle(clientID):
+def Get_Base_Handle(clientID, robotID):
     """
     This function returns the handle associated with the robot's base. The base
     is defined as link 0 on the Sawyer robot.
     """
     
     # Get handle and return code
-    returnCode, base_handle = vrep.simxGetObjectHandle(clientID, 'Sawyer_link0_visible', vrep.simx_opmode_blocking)
+    returnCode, base_handle = vrep.simxGetObjectHandle(clientID, 'Sawyer_link0_visible#'+str(robotID), vrep.simx_opmode_blocking)
     # Use return code to check for errors
     if returnCode != 0:
         print('Error: object handle for Sawyer_link0_visible did not return successfully.')
@@ -115,7 +115,7 @@ def Get_Base_Handle(clientID):
 
 # end def
     
-def Print_q():
+def Print_q(robotID):
     """
     This function prints out all of the robot's joint dimensions. Copy-and-paste
     this output into constants.py
@@ -125,20 +125,20 @@ def Print_q():
     
     # Move the robot into the "zero" position
     thetas = [0, 0, 0, 0, 0, 0, 0]
-    movements.Move_To_Position(clientID, thetas)
+    movements.Move_To_Position(clientID, thetas, robotID)
     
     print('Copy the following lines into constants.py:')
     print(' ')
     
     # Set the dummy object as the previous joint handle
-    returnCode, baseHandle = vrep.simxGetObjectHandle(clientID, 'Base_Frame_Origin', vrep.simx_opmode_blocking)
+    returnCode, baseHandle = vrep.simxGetObjectHandle(clientID, 'Base_Frame_Origin#'+str(robotID), vrep.simx_opmode_blocking)
     if returnCode != 0:
         print('Error '+str(returnCode)+': object handle for Base_Frame_Origin did not return successfully')
     # end if
     prevJointHandle = baseHandle
     for i in range(1,8):
         # Get current joint handle
-        returnCode, currJointHandle = vrep.simxGetObjectHandle(clientID, 'Joint'+str(i)+'_Origin', vrep.simx_opmode_blocking)
+        returnCode, currJointHandle = vrep.simxGetObjectHandle(clientID, 'Joint'+str(i)+'_Origin#'+str(robotID), vrep.simx_opmode_blocking)
         if returnCode != 0:
             print('Error '+str(returnCode)+': object handle for Joint'+str(i)+'_Origin did not return successfully')
         # end if
@@ -165,7 +165,7 @@ def Print_q():
     print('q = np.array([q1, q2, q3, q4, q5, q6, q7])')
     
     # Get the relative location of the end-effector
-    end_pos = movements.Get_End_Relative_Position(clientID)
+    end_pos = movements.Get_End_Relative_Position(clientID, robotID)
     print('p_end = np.array(['+str(end_pos[0])+', '+str(end_pos[1])+', '+str(end_pos[2])+'])')
     
 # end def

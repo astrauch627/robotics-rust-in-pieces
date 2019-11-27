@@ -83,3 +83,64 @@ def skew(A):
     return A_mat
     
 # end def
+    
+def Get_IK_Angles(clientID, worldCoords, rotAngle, robotID):
+    """
+    This function uses analytical inverse kinematics to find a solution of
+    joint angles in radians that will bring the end-effector to a given
+    coordinate location. Assumes Joint1 = -90, Joint3 = 0, Joint5 = 0.
+    """
+    
+    # Get position of base frame origin in world frame coordinates
+    returnCode, baseHandle = vrep.simxGetObjectHandle(clientID, 'Base_Frame_Origin#'+str(robotID), vrep.simx_opmode_blocking)
+    if returnCode != 0:
+        print('Error: object handle for Base_Frame_Origin did not return successfully.')
+    # end if
+    returnCode, basePos = vrep.simxGetObjectPosition(clientID, baseHandle, -1, vrep.simx_opmode_blocking)
+    if returnCode != 0:
+        print('Error '+str(returnCode)+' : object position for Base_Frame_Orign did not return successfully.')
+    # end if
+    
+    # Convert from world frame to base frame
+    coordsInBaseFrame = np.array(worldCoords) - np.array(basePos)
+    #x = coordsInBaseFrame[0]
+    y = coordsInBaseFrame[1]
+    z = coordsInBaseFrame[2]
+    
+    # Define constant joint lengths
+    L01y = constants.q2[1]
+    L01z = constants.q2[2]
+    L02 = np.absolute(constants.q4[0] - constants.q2[0])
+    L04 = np.absolute(constants.q6[0] - constants.q4[0])
+    L06 = np.absolute(constants.p_end[0] - constants.q6[0])
+    
+    # Define coordiante locations of points (2) and (6)
+    y2 = -L01y
+    z2 = L01z
+    y6 = y
+    z6 = z + L06
+    
+    # Find Joint4 angle
+    a = np.sqrt((y6-y2)**2.0 + (z6-z2)**2.0)
+    phi4 = np.arccos((L02**2.0+L04**2.0-a**2.0)/(2.0*L02*L04))
+    theta4 = np.radians(180.0) - phi4
+    
+    # Find Joint2 angle
+    phi2 = np.arcsin((L04*np.sin(phi4))/a)
+    gamma = np.arccos(np.absolute(y2-y6)/a)
+    theta2 = -phi2 - gamma
+    
+    # Find Joint6 angle
+    theta6 = math.radians(90) - (theta2 + theta4)
+    
+    # Define constant joint angles
+    theta1 = math.radians(-90)
+    theta3 = math.radians(0)
+    theta5 = math.radians(0)
+    theta7 = math.radians(rotAngle)
+    
+    # Return list of all joint angles
+    thetas = [theta1, theta2, theta3, theta4, theta5, theta6, theta7]
+    return thetas
+    
+# end def

@@ -11,14 +11,14 @@ import time
 import utilities
 import vrep
 
-def Move_To_Position(clientID, thetas):
+def Move_To_Position(clientID, thetas, robotID):
     """
     This function is used to move the robot to the position defined by the
     angles, thetas, for each respective joint.
     """
     
     # Get list of the handles of each robot link
-    SawyerJoints = utilities.Get_Joint_Handles(clientID)
+    SawyerJoints = utilities.Get_Joint_Handles(clientID, robotID)
     
     # Move the robot!
     for i in range(7):
@@ -39,7 +39,7 @@ def Move_To_Position(clientID, thetas):
     
 # end def
     
-def Get_End_Relative_Position(clientID):
+def Get_End_Relative_Position(clientID, robotID):
     """
     This function is used to return the position (x,y,z) of the dummy object
     that is used to represent the origin of the end-effector frame, relative
@@ -48,13 +48,13 @@ def Get_End_Relative_Position(clientID):
     """
     
     # Get handle for the base frame origin dummy object
-    returnCode, baseHandle = vrep.simxGetObjectHandle(clientID, 'Base_Frame_Origin', vrep.simx_opmode_blocking)
+    returnCode, baseHandle = vrep.simxGetObjectHandle(clientID, 'Base_Frame_Origin#'+str(robotID), vrep.simx_opmode_blocking)
     if returnCode != 0:
         print('Error: object handle for Base_Frame_Origin did not return successfully.')
     # end if
     
     # Get handle for the end-effector frame origin dummy object
-    returnCode, endHandle = vrep.simxGetObjectHandle(clientID, 'End_Frame_Origin', vrep.simx_opmode_blocking)
+    returnCode, endHandle = vrep.simxGetObjectHandle(clientID, 'End_Frame_Origin#'+str(robotID), vrep.simx_opmode_blocking)
     if returnCode != 0:
         print('Error: object handle for End_Frame_Origin did not return successfully.')
     # end if
