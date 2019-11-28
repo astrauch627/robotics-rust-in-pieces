@@ -8,7 +8,6 @@ Created on Sat Oct  5 18:28:14 2019
 import kinematics
 import math
 import numpy as np
-import time
 import utilities
 import vrep
 
@@ -31,8 +30,6 @@ def Move_To_Position(clientID, thetas, robotID):
         # end if
         
     # end for
-    
-    time.sleep(0.1)
     
 # end def
     
@@ -73,7 +70,8 @@ def Get_End_Relative_Position(clientID, robotID):
     
 def Spin_Screwdriver(clientID, currPos, robotID, objID):
     """
-    This function simulates the movement of the screwdriver and screw.
+    This function simulates the movement of the screwdriver and screw. Returns
+    the joint angles corresponding to the robots final state.
     """
     
     # Get handles
@@ -115,6 +113,42 @@ def Spin_Screwdriver(clientID, currPos, robotID, objID):
         currPos = desiredPos
         currPos_screw = desiredPos_screw
         currAngle = desiredAngle
+    # end if
+    
+    return thetas
+    
+# end def
+    
+def Toggle_Suction(clientID, state):
+    """
+    This function either turns on the sucker or turns it off, depending
+    on the specified state.
+    """
+    
+    # Get handles
+    returnCode, suckerHandle = vrep.simxGetObjectHandle(clientID, 'BaxterVacuumCup', vrep.simx_opmode_blocking)
+    if returnCode != vrep.simx_return_ok:
+        raise Exception('Error '+str(returnCode)+' : object handle for BaxterVacuumCup did not return successfully.')
+    # end if
+    
+    if state == "on":
+        # turn on sucker
+        print('Turning on vacuum suction cup')
+        print(' ')
+        returnCode = vrep.simxSetIntegerSignal(clientID, 'BaxterVacuumCup_active', 1, vrep.simx_opmode_blocking)
+        if returnCode != vrep.simx_return_ok:
+            raise Exception('Error '+str(returnCode)+' : BaxterVacuumCup did not successfully activate.')
+        # end if
+        
+    else:
+        # turn off sucker
+        print('Turning off vacuum suction cup')
+        print(' ')
+        returnCode = vrep.simxSetIntegerSignal(clientID, 'BaxterVacuumCup_active', 0, vrep.simx_opmode_blocking)
+        if returnCode != vrep.simx_return_ok:
+            raise Exception('Error '+str(returnCode)+' : BaxterVacuumCup did not successfully activate.')
+        # end if
+        
     # end if
     
 # end def

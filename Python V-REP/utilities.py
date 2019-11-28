@@ -24,6 +24,7 @@ def Establish_Connection():
 
     if clientID != -1:
         print ('Connected to remote API server')
+        print (' ')
     else:
         print ('Connection not successful, check that V-REP simulation is running!')
         sys.exit('Error: Could not connect')
