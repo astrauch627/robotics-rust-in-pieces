@@ -90,9 +90,9 @@ def Get_Base_Handle(clientID, robotID):
     This function returns the handle associated with the robot's base. The base
     is defined as link 0 on the Sawyer robot.
     """
-    
-    # Get handle and return code
+
     returnCode, base_handle = vrep.simxGetObjectHandle(clientID, 'Sawyer_link0_visible#'+str(robotID), vrep.simx_opmode_blocking)
+
     # Use return code to check for errors
     if returnCode != vrep.simx_return_ok:
         raise Exception('Error: object handle for Sawyer_link0_visible did not return successfully.')

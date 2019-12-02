@@ -75,7 +75,7 @@ def Spin_Screwdriver(clientID, currPos, robotID, objID):
     """
     
     # Get handles
-    returnCode, screwHandle = vrep.simxGetObjectHandle(clientID, 'Screw_Visible#'+str(objID), vrep.simx_opmode_blocking)
+    returnCode, screwHandle = vrep.simxGetObjectHandle(clientID, 'Screw_Visible___'+str(objID), vrep.simx_opmode_blocking)
     if returnCode != vrep.simx_return_ok:
         raise Exception('Error '+str(returnCode)+' : object handle for Screw_Visible did not return successfully.')
     # end if
